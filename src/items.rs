@@ -81,6 +81,7 @@ impl Rewrite for ast::Local {
                 false,
             )?
         };
+        dbg!(&result);
         let let_kw_offset = result.len() - "let ".len();
 
         // 4 = "let ".len()
@@ -427,6 +428,7 @@ impl<'a> FmtVisitor<'a> {
         let context = self.get_context();
 
         let mut fn_brace_style = newline_for_brace(self.config, &fn_sig.generics.where_clause);
+        //dbg!(fn_brace_style);
         let (result, _, force_newline_brace) =
             rewrite_fn_base(&context, indent, ident, fn_sig, span, fn_brace_style).ok()?;
 
@@ -2476,6 +2478,7 @@ fn rewrite_fn_base(
         &fn_sig.generics,
         shape,
     )?;
+    //dbg!(&generics_str);
     result.push_str(&generics_str);
 
     let snuggle_angle_bracket = generics_str
@@ -2507,14 +2510,10 @@ fn rewrite_fn_base(
         one_line_budget, multi_line_budget, param_indent
     );
 
-    result.push('(');
-    // Check if vertical layout was forced.
-    if one_line_budget == 0
-        && !snuggle_angle_bracket
-        && context.config.indent_style() == IndentStyle::Visual
-    {
-        result.push_str(&param_indent.to_string_with_newline(context.config));
-    }
+    //result.push('\n');
+    //result.push('(');
+    /*     result.push_str(&indent.to_string_with_newline(context.config));
+    result.push('('); */
 
     let params_end = if fd.inputs.is_empty() {
         context
@@ -2530,6 +2529,8 @@ fn rewrite_fn_base(
             .span_after(mk_sp(fn_sig.generics.span.hi(), span.hi()), "("),
         params_end,
     );
+    //dbg!(params_end);
+    //dbg!(params_span);
     let param_str = rewrite_params(
         context,
         &fd.inputs,
@@ -2550,11 +2551,25 @@ fn rewrite_fn_base(
     let mut no_params_and_over_max_width = false;
 
     if put_params_in_block {
+        result.push_str(&indent.to_string_with_newline(context.config));
+    }
+    result.push('(');
+
+    // Check if vertical layout was forced.
+    if one_line_budget == 0
+        && !snuggle_angle_bracket
+        && context.config.indent_style() == IndentStyle::Visual
+    {
+        result.push_str(&param_indent.to_string_with_newline(context.config));
+    }
+
+    if put_params_in_block {
         param_indent = indent.block_indent(context.config);
         result.push_str(&param_indent.to_string_with_newline(context.config));
         result.push_str(&param_str);
         result.push_str(&indent.to_string_with_newline(context.config));
         result.push(')');
+        //dbg!(&result);
     } else {
         result.push_str(&param_str);
         let used_width = last_line_used_width(&result, indent.width()) + first_line_width(&ret_str);
@@ -2587,6 +2602,7 @@ fn rewrite_fn_base(
             }
             result.push(')');
         }
+        //dbg!(&result);
     }
 
     // Return type.
@@ -2848,6 +2864,8 @@ fn rewrite_params(
         false,
     )
     .collect();
+
+    //dbg!(&param_items);
 
     let tactic = definitive_tactic(
         &param_items,
@@ -3560,7 +3578,7 @@ pub(crate) fn rewrite_mod(
     result.push_str("mod ");
     result.push_str(rewrite_ident(context, ident));
     result.push(';');
-    rewrite_attrs(context, item, &result, attrs_shape)
+    dbg!(rewrite_attrs(context, item, &result, attrs_shape))
 }
 
 /// Rewrite `extern crate foo;`.

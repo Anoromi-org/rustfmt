@@ -89,8 +89,8 @@ fn execute() -> i32 {
         if found_fmt {
             true
         } else {
-            found_fmt = x == "fmt";
-            x != "fmt"
+            found_fmt = x == "ofmt";
+            x != "ofmt"
         }
     });
 

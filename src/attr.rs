@@ -160,7 +160,8 @@ fn format_derive(
     // Format the final result.
     let mut result = String::with_capacity(128);
     result.push_str(prefix);
-    result.push_str("[derive(");
+    // OTODO rewrite
+    result.push_str("[ derive(");
     if nested {
         let nested_indent = argument_shape.indent.to_string_with_newline(context.config);
         result.push_str(&nested_indent);
@@ -175,7 +176,10 @@ fn format_derive(
     } else {
         result.push_str(&item_str);
     }
-    result.push_str(")]");
+    let suffix = if !result.contains('\n') {" "} else {""};
+    result.push(')');
+    result.push_str(suffix);
+    result.push(']');
 
     Some(result)
 }
@@ -288,6 +292,7 @@ impl Rewrite for ast::MetaItem {
             }
             ast::MetaItemKind::List(ref list) => {
                 let path = rewrite_path(context, PathContext::Type, &None, &self.path, shape)?;
+                //dbg!(&path);
                 let has_trailing_comma = crate::expr::span_ends_with_comma(context, self.span);
                 overflow::rewrite_with_parens(
                     context,
@@ -365,16 +370,25 @@ impl Rewrite for ast::Attribute {
 
                 // 1 = `[`
                 let shape = shape.offset_left(prefix.len() + 1, self.span)?;
+                //dbg!("hmmm");
+                // self.ident().unwrap().
+                // let hehe = self.ident().unwrap().to_string_with_newline(context.config);
+
                 Ok(meta.rewrite_result(context, shape).map_or_else(
                     |_| snippet.to_owned(),
-                    |rw| match &self.kind {
-                        ast::AttrKind::Normal(normal_attr) => match normal_attr.item.unsafety {
-                            // For #![feature(unsafe_attributes)]
-                            // See https://github.com/rust-lang/rust/issues/123757
-                            ast::Safety::Unsafe(_) => format!("{}[unsafe({})]", prefix, rw),
-                            _ => format!("{}[{}]", prefix, rw),
-                        },
-                        _ => format!("{}[{}]", prefix, rw),
+                    |rw| {
+                        let before_attr = if rw.contains("\n") { "\n" } else { "" };
+                        let suffix = if rw.contains("\n") { "" } else { " " };
+                        //dbg!(&rw);
+                        match &self.kind {
+                            ast::AttrKind::Normal(normal_attr) => match normal_attr.item.unsafety {
+                                // For #![feature(unsafe_attributes)]
+                                // See https://github.com/rust-lang/rust/issues/123757
+                                ast::Safety::Unsafe(_) => format!("{}[unsafe({})]", prefix, rw),
+                                _ => format!("{}[ {}{suffix}]", prefix, rw),
+                            },
+                            _ => format!("{}[ {}{suffix}]", prefix, rw),
+                        }
                     },
                 ))
             } else {

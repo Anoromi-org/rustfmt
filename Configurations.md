@@ -2511,7 +2511,7 @@ required_version=">=1.0.0, <2.0.0"
 
 The width threshold for an array element to be considered "short".
 
-The layout of an array is dependent on the length of each of its elements. 
+The layout of an array is dependent on the length of each of its elements.
 If the length of every element in an array is below this threshold (all elements are "short") then the array can be formatted in the mixed/compressed style, but if any one element has a length that exceeds this threshold then the array elements will have to be formatted vertically.
 
 - **Default value**: `10`

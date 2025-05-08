@@ -52,6 +52,7 @@ pub(crate) fn rewrite_closure(
         context,
         shape,
     )?;
+
     // 1 = space between `|...|` and body.
     let body_shape = shape.offset_left(extra_offset, span)?;
 
@@ -70,6 +71,7 @@ pub(crate) fn rewrite_closure(
             _ => Err(RewriteError::Unknown),
         };
 
+        dbg!(&result);
         result.or_else(|_| {
             // Either we require a block, or tried without and failed.
             rewrite_closure_block(body, &prefix, context, body_shape)
@@ -190,7 +192,14 @@ fn rewrite_closure_with_block(
         shape,
         false,
     )?;
-    Ok(format!("{prefix} {block}"))
+    // OTODO what the hell is this and when does it get called?
+    dbg!("what the hell is this and when does it get called?");
+    let indent = if block.contains("\n") {
+        shape.indent.to_string_with_newline(context.config)
+    } else {
+        " ".into()
+    };
+    Ok(format!("{prefix}{indent}{block}"))
 }
 
 // Rewrite closure with a single expression without wrapping its body with block.
@@ -230,7 +239,14 @@ fn rewrite_closure_expr(
                 Ok(rw)
             }
         })
-        .map(|rw| format!("{} {}", prefix, rw))
+        .map(|rw| {
+            let indent = if rw.contains("\n") {
+                shape.indent.to_string_with_newline(context.config)
+            } else {
+                " ".into()
+            };
+            format!("{}{indent}{}", prefix, rw)
+        })
 }
 
 // Rewrite closure whose body is block.
@@ -245,8 +261,11 @@ fn rewrite_closure_block(
         "expected a block expression"
     );
 
+    // OTODO this is very sussipcious, Can there be aa case where it's improperly formatted?
+    let indent = shape.indent.to_string_with_newline(context.config);
+
     Ok(format!(
-        "{} {}",
+        "{}{indent}{}",
         prefix,
         block.rewrite_result(context, shape)?
     ))
@@ -306,7 +325,8 @@ fn rewrite_closure_fn_decl(
 
     // 1 = |
     let param_offset = nested_shape.indent + 1;
-    let param_shape = nested_shape.offset_left(1, span)?.visual_indent(0);
+    // OTODO offset_left used to be 1 not 2. Add a condition
+    let param_shape = nested_shape.offset_left(2, span)?.visual_indent(0);
     let ret_str = fn_decl.output.rewrite_result(context, param_shape)?;
 
     let param_items = itemize_list(
@@ -337,9 +357,25 @@ fn rewrite_closure_fn_decl(
 
     let fmt = ListFormatting::new(param_shape, context.config)
         .tactic(tactic)
-        .preserve_newline(true);
-    let list_str = write_list(&item_vec, &fmt)?;
-    let mut prefix = format!("{binder}{const_}{immovable}{coro}{capture_str}|{list_str}|");
+        .preserve_newline(true)
+        .ends_with_newline(true);
+    let list_str = dbg!(write_list(&item_vec, &fmt)?);
+
+    // OTODO this works, add configuration
+    let padding_start = if list_str.is_empty() || list_str.starts_with(" ") {
+        ""
+    } else {
+        " "
+    };
+    let padding_end = if list_str.is_empty() || list_str.ends_with(" ") {
+        ""
+    } else {
+        " "
+    };
+
+    let mut prefix = format!(
+        "{binder}{const_}{immovable}{coro}{capture_str}|{padding_start}{list_str}{padding_end}|"
+    );
 
     if !ret_str.is_empty() {
         if prefix.contains('\n') {

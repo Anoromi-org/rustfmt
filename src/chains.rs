@@ -119,7 +119,9 @@ fn get_block_child_shape(
     if prev_ends_with_block {
         shape.block_indent(0)
     } else {
-        shape.block_indent(context.config.tab_spaces())
+        // OTODO this works, now make it configurable
+        shape.block_indent(0)
+        // shape.block_indent(context.config.tab_spaces())
     }
     .with_max_width(context.config)
 }

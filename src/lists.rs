@@ -283,9 +283,14 @@ where
 
     let mut line_len = 0;
     let indent_str = &formatting.shape.indent.to_string(formatting.config);
+    // if tactic == DefinitiveListTactic::Horizontal || tactic == DefinitiveListTactic::Mixed  {
+    //     result.push(' ');
+    // }
+
     while let Some((i, item)) = iter.next() {
         let item = item.as_ref();
         let inner_item = item.item.as_ref().or_else(|err| Err(err.clone()))?;
+        // dbg!(&inner_item);
         let first = i == 0;
         let last = iter.peek().is_none();
         let mut separate = match sep_place {
@@ -310,8 +315,10 @@ where
             continue;
         }
 
+        // dbg!(&tactic);
+
         match tactic {
-            DefinitiveListTactic::Horizontal if !first => {
+            DefinitiveListTactic::Horizontal /* if !first  */ => {
                 result.push(' ');
             }
             DefinitiveListTactic::SpecialMacro(num_args_before) => {
@@ -327,7 +334,7 @@ where
                 }
             }
             DefinitiveListTactic::Vertical
-                if !first && !inner_item.is_empty() && !result.is_empty() =>
+                if /* !first && */ !inner_item.is_empty() && !result.is_empty()  =>
             {
                 result.push('\n');
                 result.push_str(indent_str);
@@ -514,6 +521,12 @@ where
         {
             item_max_width = None;
             result.push('\n');
+        }
+
+        if !result.contains("\n") && last && tactic == DefinitiveListTactic::Horizontal
+            || tactic == DefinitiveListTactic::Mixed
+        {
+            result.push(' ');
         }
 
         prev_item_had_post_comment = item.post_comment.is_some();

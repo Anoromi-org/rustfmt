@@ -54,6 +54,7 @@ pub use crate::rustfmt_diff::{ModifiedChunk, ModifiedLines};
 
 #[macro_use]
 mod utils;
+pub mod config_test;
 
 macro_rules! static_regex {
     ($re:literal) => {{

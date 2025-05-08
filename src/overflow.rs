@@ -25,7 +25,10 @@ use crate::shape::Shape;
 use crate::source_map::SpanUtils;
 use crate::spanned::Spanned;
 use crate::types::{SegmentParam, can_be_overflowed_type};
-use crate::utils::{count_newlines, extra_offset, first_line_width, last_line_width, mk_sp};
+use crate::utils::{
+    count_newlines, extra_offset, first_line_width, last_line_width, mk_sp,
+    remove_trailing_white_spaces,
+};
 
 /// A list of `format!`-like macros, that take a long format string and a list of arguments to
 /// format.
@@ -695,7 +698,7 @@ impl<'a> Context<'a> {
             self.ident.len() + items_str.len() + 2 + indent_str.len() + nested_indent_str.len(),
         );
         result.push_str(self.ident);
-        result.push_str(prefix);
+
         let force_single_line = if self.context.config.style_edition() >= StyleEdition::Edition2024
         {
             !self.context.use_block_indent() || (is_extendable && extend_width <= shape.width)
@@ -706,6 +709,15 @@ impl<'a> Context<'a> {
                 || (self.context.inside_macro() && !items_str.contains('\n') && fits_one_line)
                 || (is_extendable && extend_width <= shape.width)
         };
+
+        // This moves to the next line
+        // OTODO this causes trailing whitespaces in let statements = \n
+        if !force_single_line {
+            result.push_str(&indent_str);
+        }
+
+        result.push_str(prefix);
+
         if force_single_line {
             result.push_str(items_str);
         } else {
@@ -722,12 +734,12 @@ impl<'a> Context<'a> {
     fn rewrite(&self, shape: Shape) -> RewriteResult {
         let (extendable, items_str) = self.rewrite_items()?;
 
+        self.context.use_block.replace(true);
         // If we are using visual indent style and failed to format, retry with block indent.
         if !self.context.use_block_indent()
             && need_block_indent(&items_str, self.nested_shape)
             && !extendable
         {
-            self.context.use_block.replace(true);
             let result = self.rewrite(shape);
             self.context.use_block.replace(false);
             return result;

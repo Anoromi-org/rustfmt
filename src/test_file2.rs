@@ -1,0 +1,70 @@
+use crate::config_test::{ very_long_function_taking_1_closure, very_long_function_taking_1_closures_1_param };
+
+const VERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER : u32 = 1;
+
+fn test
+(
+  a : Arc
+  <
+    Mutex
+    <
+      VERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER,
+      VERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER,
+    >,
+  >,
+  b : Arc
+  <
+    Mutex
+    <
+      VERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER,
+      VERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER,
+    >,
+  >,
+)
+{
+  let v = vec![];
+  let cat = v[Arc::new
+  (
+    Mutex::new
+    (
+      VERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER,
+      VERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER,
+    ),
+  )];
+  let b = async move
+  {
+    3;
+  };
+  let k = async move { 3 };
+  async
+  {
+    very_long_function_taking_1_closures_1_param
+    (
+      VERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER,
+      | aVERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER,
+        bVERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER |
+      {
+        println!( "Hello there" );
+      },
+      VERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER,
+      | aVERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER,
+        bVERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER |
+      {
+        println!( "Hello there" );
+      },
+    );
+  };
+
+  very_long_function_taking_1_closures_1_param
+  (
+    VERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER,
+    | aVERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER,
+      bVERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER | { println!( "Hello there" ) },
+  );
+
+  very_long_function_taking_1_closures_1_param
+  (
+    VERY_LONG_SOMETHING_CONSTANT_HELLO_THERE_HOW_DO_YOU_DO_NEEDS_TO_BE_EVEN_LONGER,
+    | a, b | println!( "Hello there" ),
+  );
+}

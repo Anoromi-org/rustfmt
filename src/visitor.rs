@@ -220,6 +220,10 @@ impl<'b, 'a: 'b> FmtVisitor<'a> {
         let brace_compensation = BytePos(if has_braces { 1 } else { 0 });
 
         self.last_pos = self.last_pos + brace_compensation;
+
+        // OTODO this works for block formatting, add configuration.
+        // self.push_str(&self.block_indent.to_string_with_newline(self.config));
+
         self.block_indent = self.block_indent.block_indent(self.config);
         self.push_str("{");
         self.trim_spaces_after_opening_brace(b, inner_attrs);
@@ -405,6 +409,8 @@ impl<'b, 'a: 'b> FmtVisitor<'a> {
             _ => unreachable!(),
         };
 
+        //dbg!(&rewrite);
+
         if let Some((fn_str, fn_brace_style)) = rewrite {
             self.format_missing_with_indent(source!(self, s).lo());
 
@@ -418,6 +424,8 @@ impl<'b, 'a: 'b> FmtVisitor<'a> {
             match fn_brace_style {
                 FnBraceStyle::SameLine => self.push_str(" "),
                 FnBraceStyle::NextLine => {
+                    // OTODO because I changed block formatting this is no longer need. Add
+                    // configuration.
                     self.push_str(&self.block_indent.to_string_with_newline(self.config))
                 }
                 _ => unreachable!(),

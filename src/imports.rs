@@ -337,6 +337,7 @@ impl UseTree {
         let vis = self.visibility.as_ref().map_or(Cow::from(""), |vis| {
             crate::utils::format_visibility(context, vis)
         });
+        dbg!(&vis);
         let use_str = self
             .rewrite_result(context, shape.offset_left(vis.len(), self.span())?)
             .map(|s| {
@@ -349,6 +350,7 @@ impl UseTree {
         match self.attrs {
             Some(ref attrs) if !attrs.is_empty() => {
                 let attr_str = attrs.rewrite_result(context, shape)?;
+                dbg!(&attr_str);
                 let lo = attrs.last().unknown_error()?.span.hi();
                 let hi = self.span.lo();
                 let span = mk_sp(lo, hi);
@@ -1074,7 +1076,8 @@ fn rewrite_nested_use_tree(
         && context.config.imports_indent() == IndentStyle::Block
     {
         format!(
-            "{{\n{}{}\n{}}}",
+            "\n{}{{\n{}{}\n{}}}",
+            shape.indent.to_string(context.config),
             nested_shape.indent.to_string(context.config),
             list_str,
             shape.indent.to_string(context.config)
@@ -1082,6 +1085,7 @@ fn rewrite_nested_use_tree(
     } else {
         format!("{{{list_str}}}")
     };
+    dbg!(&result);
 
     Ok(result)
 }
@@ -1128,6 +1132,8 @@ impl Rewrite for UseTree {
     fn rewrite_result(&self, context: &RewriteContext<'_>, mut shape: Shape) -> RewriteResult {
         let mut result = String::with_capacity(256);
         let mut iter = self.path.iter().peekable();
+
+        // dbg!(&self.path);
         while let Some(segment) = iter.next() {
             let segment_str = segment.rewrite_result(context, shape)?;
             result.push_str(&segment_str);
@@ -1136,6 +1142,7 @@ impl Rewrite for UseTree {
                 // 2 = "::"
                 shape = shape.offset_left(2 + segment_str.len(), self.span())?;
             }
+            // dbg!(&result);
         }
         Ok(result)
     }

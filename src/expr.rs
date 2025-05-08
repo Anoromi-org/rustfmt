@@ -123,7 +123,7 @@ pub(crate) fn format_expr(
         ast::ExprKind::Call(ref callee, ref args) => {
             let inner_span = mk_sp(callee.span.hi(), expr.span.hi());
             let callee_str = callee.rewrite_result(context, shape)?;
-            rewrite_call(context, &callee_str, args, inner_span, shape)
+            dbg!(rewrite_call(context, &callee_str, args, inner_span, shape))
         }
         ast::ExprKind::Paren(ref subexpr) => rewrite_paren(context, subexpr, shape, expr.span),
         ast::ExprKind::Binary(op, ref lhs, ref rhs) => {
@@ -413,15 +413,15 @@ pub(crate) fn format_expr(
                 ))
             }
         }
-        ast::ExprKind::Gen(capture_by, ref block, ref kind, _) => {
+        ast::ExprKind::Gen(capture_by, ref block, ref kind, huh) => {
             let mover = if matches!(capture_by, ast::CaptureBy::Value { .. }) {
-                "move "
+                " move"
             } else {
                 ""
             };
             if let rw @ Ok(_) = rewrite_single_line_block(
                 context,
-                format!("{kind} {mover}").as_str(),
+                format!("{kind}{mover} ").as_str(),
                 block,
                 Some(&expr.attrs),
                 None,
@@ -429,10 +429,11 @@ pub(crate) fn format_expr(
             ) {
                 rw
             } else {
+                let indent = shape.indent.to_string_with_newline(context.config);
                 // 6 = `async `
                 let budget = shape.width.saturating_sub(6);
                 Ok(format!(
-                    "{kind} {mover}{}",
+                    "{kind}{mover}{indent}{}",
                     rewrite_block(
                         block,
                         Some(&expr.attrs),
@@ -1533,7 +1534,8 @@ pub(crate) fn can_be_overflowed_expr(
 
         // Handle parenthetical expressions
         ast::ExprKind::Call(..) | ast::ExprKind::MethodCall(..) | ast::ExprKind::Tup(..) => {
-            context.use_block_indent() && args_len == 1
+            //context.use_block_indent() && args_len == 1
+            false
         }
 
         // Handle unary-like expressions
@@ -1616,8 +1618,8 @@ pub(crate) fn rewrite_paren(
     let sub_shape = shape.offset_left(1, span)?.sub_width(1, span)?;
     let subexpr_str = subexpr.rewrite_result(context, sub_shape)?;
     let fits_single_line = !pre_comment.contains("//") && !post_comment.contains("//");
-    if fits_single_line {
-        Ok(format!("({pre_comment}{subexpr_str}{post_comment})"))
+    if fits_single_line && !subexpr_str.contains('\n') {
+        Ok(format!("( {pre_comment}{subexpr_str}{post_comment} )"))
     } else {
         rewrite_paren_in_multi_line(context, subexpr, shape, pre_span, post_span)
     }
@@ -1634,6 +1636,7 @@ fn rewrite_paren_in_multi_line(
     let nested_shape = Shape::indented(nested_indent, context.config);
     let pre_comment = rewrite_missing_comment(pre_span, nested_shape, context)?;
     let post_comment = rewrite_missing_comment(post_span, nested_shape, context)?;
+    dbg!(&subexpr);
     let subexpr_str = subexpr.rewrite_result(context, nested_shape)?;
 
     let mut result = String::with_capacity(subexpr_str.len() * 2);
@@ -1685,7 +1688,8 @@ fn rewrite_index(
     // Return if index fits in a single line.
     match orig_index_rw {
         Ok(ref index_str) if !index_str.contains('\n') => {
-            return Ok(format!("{expr_str}[{index_str}]"));
+            // OTODO add configuration
+            return Ok(format!("{expr_str}[ {index_str} ]"));
         }
         _ => (),
     }
@@ -1696,20 +1700,30 @@ fn rewrite_index(
         .offset_left(1, index.span())?
         .sub_width(1 + rhs_overhead, index.span())?;
     let new_index_rw = index.rewrite_result(context, index_shape);
+    dbg!("Hello");
+    println!("old");
+    println!("{}", orig_index_rw.as_ref().unwrap());
+    println!("new");
+    println!("{}", new_index_rw.as_ref().unwrap());
     match (orig_index_rw, new_index_rw) {
         (_, Ok(ref new_index_str)) if !new_index_str.contains('\n') => Ok(format!(
-            "{}{}[{}]",
+            // OTODO add configuration
+            "{}{}[ {} ]",
             expr_str,
             indent.to_string_with_newline(context.config),
             new_index_str,
         )),
+        // OTODO Idk what to do here
         (Err(_), Ok(ref new_index_str)) => Ok(format!(
             "{}{}[{}]",
             expr_str,
             indent.to_string_with_newline(context.config),
             new_index_str,
         )),
-        (Ok(ref index_str), _) => Ok(format!("{expr_str}[{index_str}]")),
+        (Ok(ref index_str), _) => {
+            let suffix = if index_str.contains('\n') { "" } else { " " };
+            Ok(format!("{expr_str}[ {index_str}{suffix}]"))
+        }
         // When both orig_index_rw and new_index_rw result in errors, we currently propagate the
         // error from the second attempt since it is more generous with width constraints.
         // This decision is somewhat arbitrary and is open to change.
@@ -1731,8 +1745,6 @@ fn rewrite_struct_lit<'a>(
     span: Span,
     shape: Shape,
 ) -> RewriteResult {
-    debug!("rewrite_struct_lit: shape {:?}", shape);
-
     enum StructLitField<'a> {
         Regular(&'a ast::ExprField),
         Base(&'a ast::Expr),
@@ -1754,7 +1766,6 @@ fn rewrite_struct_lit<'a>(
 
     // Foo { a: Foo } - indent is +3, width is -5.
     let (h_shape, v_shape) = struct_lit_shape(shape, context, path_str.len() + 3, 2, span)?;
-
     let one_line_width = h_shape.map_or(0, |shape| shape.width);
     let body_lo = context.snippet_provider.span_after(span, "{");
     let fields_str = if struct_lit_can_be_aligned(fields, has_base_or_rest)
@@ -1838,7 +1849,15 @@ fn rewrite_struct_lit<'a>(
 
     let fields_str =
         wrap_struct_field(context, attrs, &fields_str, shape, v_shape, one_line_width)?;
-    Ok(format!("{path_str} {{{fields_str}}}"))
+
+    // OTODO this works, now add context
+    let indent = if fields_str.contains('\n') {
+        shape.indent.to_string_with_newline(context.config)
+    } else {
+        " ".into()
+    };
+
+    Ok(format!("{path_str}{indent}{{{fields_str}}}"))
 
     // FIXME if context.config.indent_style() == Visual, but we run out
     // of space, we should fall back to BlockIndent.

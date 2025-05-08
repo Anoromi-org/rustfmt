@@ -111,14 +111,15 @@ fn rewrite_pairs_multiline<T: Rewrite>(
     context: &RewriteContext<'_>,
 ) -> RewriteResult {
     let rhs_offset = shape.rhs_overhead(context.config);
-    let nested_shape = (match context.config.indent_style() {
-        IndentStyle::Visual => shape.visual_indent(0),
-        IndentStyle::Block => shape.block_indent(context.config.tab_spaces()),
-    })
+    let nested_shape = shape.block_indent(0)
+    // let nested_shape = (match context.config.indent_style() {
+    //     IndentStyle::Visual => shape.visual_indent(0),
+    //     IndentStyle::Block => shape.block_indent(context.config.tab_spaces()),
+    // })
     .with_max_width(context.config)
     .sub_width(rhs_offset, list.span)?;
 
-    let indent_str = nested_shape.indent.to_string_with_newline(context.config);
+    let indent_str = shape.indent.to_string_with_newline(context.config);
     let mut result = String::new();
 
     result.push_str(list.list[0].1.as_ref().map_err(|err| err.clone())?);
@@ -160,6 +161,8 @@ fn rewrite_pairs_multiline<T: Rewrite>(
             }
         }
 
+        println!("hmmm");
+        println!("{}", default_rw.as_ref().unwrap());
         result.push_str(default_rw.as_ref().map_err(|err| err.clone())?);
     }
     Ok(result)
@@ -328,7 +331,10 @@ impl FlattenPair for ast::Expr {
                 SeparatorPlace::Back => nested_shape.sub_width(nested_overhead, node.span)?,
                 SeparatorPlace::Front => nested_shape.offset_left(nested_overhead, node.span)?,
             };
-            node.rewrite_result(context, default_shape)
+            let test = node.rewrite_result(context, default_shape).unwrap();
+            println!("test");
+            println!("{}", test);
+            Ok(test)
         };
 
         // Turn a tree of binop expressions into a list using a depth-first,

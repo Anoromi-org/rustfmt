@@ -1636,7 +1636,6 @@ fn rewrite_paren_in_multi_line(
     let nested_shape = Shape::indented(nested_indent, context.config);
     let pre_comment = rewrite_missing_comment(pre_span, nested_shape, context)?;
     let post_comment = rewrite_missing_comment(post_span, nested_shape, context)?;
-    dbg!(&subexpr);
     let subexpr_str = subexpr.rewrite_result(context, nested_shape)?;
 
     let mut result = String::with_capacity(subexpr_str.len() * 2);

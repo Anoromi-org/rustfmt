@@ -1,0 +1,152 @@
+thread 'main' panicked at src/pairs.rs:334:60:
+called `Result::unwrap()` on an `Err` value: ExceedsMaxWidth { configured_width: 3, span: Span { lo: BytePos(310), hi: BytePos(332), ctxt: #0 } }
+stack backtrace:
+   0:     0x7f50aeacce25 - std::backtrace::Backtrace::create::h38afe53d7dc2ee8a
+   1:     0x7f50ace62495 - std::backtrace::Backtrace::force_capture::h23772f3a350b6c5f
+   2:     0x7f50abeee79f - std[43c66c29bb2da0cf]::panicking::update_hook::<alloc[9d6af472d28301be]::boxed::Box<rustc_driver_impl[2a6f85d55f84b44d]::install_ice_hook::{closure#1}>>::{closure#0}
+   3:     0x7f50ace7bd13 - std::panicking::rust_panic_with_hook::hec08a623892d81df
+   4:     0x7f50ace7ba0a - std::panicking::begin_panic_handler::{{closure}}::hb834b9141c0f2230
+   5:     0x7f50ace78019 - std::sys::backtrace::__rust_end_short_backtrace::h1dafc29f13d910f2
+   6:     0x7f50ace7b6cd - __rustc[e22706cb8dde8ca2]::rust_begin_unwind
+   7:     0x7f50a989dc90 - core::panicking::panic_fmt::h3e60cc11c74279b0
+   8:     0x7f50a9ae5876 - core::result::unwrap_failed::hac6b2ed8c48de0f8
+   9:     0x56379beec6a5 - core::result::Result<T,E>::unwrap::hbe4527b281f142a1
+                               at /home/anoromi/.rustup/toolchains/nightly-2025-04-02-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1109:23
+  10:     0x56379bef521a - <rustc_ast::ast::Expr as rustfmt_nightly::pairs::FlattenPair>::flatten::{{closure}}::h0a30646f562ed0dd
+                               at /home/anoromi/code/rust/rustfmt/src/pairs.rs:334:24
+  11:     0x56379bedd32e - <rustc_ast::ast::Expr as rustfmt_nightly::pairs::FlattenPair>::flatten::h6d3b49b6f0fa0a8c
+                               at /home/anoromi/code/rust/rustfmt/src/pairs.rs:355:30
+  12:     0x56379bfa6b36 - rustfmt_nightly::pairs::rewrite_all_pairs::hbb013df38af0501e
+                               at /home/anoromi/code/rust/rustfmt/src/pairs.rs:46:5
+  13:     0x56379bf5cd59 - rustfmt_nightly::expr::format_expr::hf7029da1698c8052
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:131:13
+  14:     0x56379bed7996 - rustfmt_nightly::expr::<impl rustfmt_nightly::rewrite::Rewrite for rustc_ast::ast::Expr>::rewrite_result::h29de34f77de19c0b
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:47:9
+  15:     0x56379bef51fe - <rustc_ast::ast::Expr as rustfmt_nightly::pairs::FlattenPair>::flatten::{{closure}}::h0a30646f562ed0dd
+                               at /home/anoromi/code/rust/rustfmt/src/pairs.rs:334:24
+  16:     0x56379bedd32e - <rustc_ast::ast::Expr as rustfmt_nightly::pairs::FlattenPair>::flatten::h6d3b49b6f0fa0a8c
+                               at /home/anoromi/code/rust/rustfmt/src/pairs.rs:355:30
+  17:     0x56379bfa6b36 - rustfmt_nightly::pairs::rewrite_all_pairs::hbb013df38af0501e
+                               at /home/anoromi/code/rust/rustfmt/src/pairs.rs:46:5
+  18:     0x56379bf5cd59 - rustfmt_nightly::expr::format_expr::hf7029da1698c8052
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:131:13
+  19:     0x56379bed7996 - rustfmt_nightly::expr::<impl rustfmt_nightly::rewrite::Rewrite for rustc_ast::ast::Expr>::rewrite_result::h29de34f77de19c0b
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:47:9
+  20:     0x56379bed7911 - rustfmt_nightly::expr::<impl rustfmt_nightly::rewrite::Rewrite for rustc_ast::ast::Expr>::rewrite::h5fe19922f1d1eb27
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:43:9
+  21:     0x56379beece12 - rustfmt_nightly::pairs::rewrite_pairs_one_line::h35eb2f664f43513b
+                               at /home/anoromi/code/rust/rustfmt/src/pairs.rs:90:24
+  22:     0x56379beec7b0 - rustfmt_nightly::pairs::rewrite_all_pairs::{{closure}}::hb21fa50dfc7f35c6
+                               at /home/anoromi/code/rust/rustfmt/src/pairs.rs:53:17
+  23:     0x56379bf8220d - core::result::Result<T,E>::and_then::hc43102fc83d7322e
+                               at /home/anoromi/.rustup/toolchains/nightly-2025-04-02-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1353:22
+  24:     0x56379bfa6b8b - rustfmt_nightly::pairs::rewrite_all_pairs::hbb013df38af0501e
+                               at /home/anoromi/code/rust/rustfmt/src/pairs.rs:46:5
+  25:     0x56379bf5cd59 - rustfmt_nightly::expr::format_expr::hf7029da1698c8052
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:131:13
+  26:     0x56379bed7996 - rustfmt_nightly::expr::<impl rustfmt_nightly::rewrite::Rewrite for rustc_ast::ast::Expr>::rewrite_result::h29de34f77de19c0b
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:47:9
+  27:     0x56379bf693b8 - rustfmt_nightly::expr::rewrite_paren_in_multi_line::h2e26810e5a30f139
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:1639:23
+  28:     0x56379bf68f5d - rustfmt_nightly::expr::rewrite_paren::he2f5289b195cb838
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:1624:9
+  29:     0x56379bf597ee - rustfmt_nightly::expr::format_expr::hf7029da1698c8052
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:128:46
+  30:     0x56379bed7996 - rustfmt_nightly::expr::<impl rustfmt_nightly::rewrite::Rewrite for rustc_ast::ast::Expr>::rewrite_result::h29de34f77de19c0b
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:47:9
+  31:     0x56379bef5383 - <rustc_ast::ast::Expr as rustfmt_nightly::pairs::FlattenPair>::flatten::{{closure}}::h0a30646f562ed0dd
+                               at /home/anoromi/code/rust/rustfmt/src/pairs.rs:320:24
+  32:     0x56379bedd32e - <rustc_ast::ast::Expr as rustfmt_nightly::pairs::FlattenPair>::flatten::h6d3b49b6f0fa0a8c
+                               at /home/anoromi/code/rust/rustfmt/src/pairs.rs:355:30
+  33:     0x56379bfa6b36 - rustfmt_nightly::pairs::rewrite_all_pairs::hbb013df38af0501e
+                               at /home/anoromi/code/rust/rustfmt/src/pairs.rs:46:5
+  34:     0x56379bf5cd59 - rustfmt_nightly::expr::format_expr::hf7029da1698c8052
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:131:13
+  35:     0x56379bed7996 - rustfmt_nightly::expr::<impl rustfmt_nightly::rewrite::Rewrite for rustc_ast::ast::Expr>::rewrite_result::h29de34f77de19c0b
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:47:9
+  36:     0x56379c0f47e8 - rustfmt_nightly::closures::rewrite_closure_expr::h5b7c2e0c0e09ad78
+                               at /home/anoromi/code/rust/rustfmt/src/closures.rs:234:5
+  37:     0x56379c0f39eb - rustfmt_nightly::closures::try_rewrite_without_block::hc3cb226decd9cd71
+                               at /home/anoromi/code/rust/rustfmt/src/closures.rs:100:9
+  38:     0x56379c0f3713 - rustfmt_nightly::closures::rewrite_closure::h1f2c223a2c336a4e
+                               at /home/anoromi/code/rust/rustfmt/src/closures.rs:69:17
+  39:     0x56379bf5c603 - rustfmt_nightly::expr::format_expr::hf7029da1698c8052
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:259:43
+  40:     0x56379bed7996 - rustfmt_nightly::expr::<impl rustfmt_nightly::rewrite::Rewrite for rustc_ast::ast::Expr>::rewrite_result::h29de34f77de19c0b
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:47:9
+  41:     0x56379bf40f2c - rustfmt_nightly::expr::rewrite_assign_rhs_expr::h3d3d130cf62be872
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:2222:9
+  42:     0x56379bf420bc - rustfmt_nightly::expr::rewrite_assign_rhs_with::h727c280f44607b2a
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:2238:15
+  43:     0x56379bf4012b - rustfmt_nightly::expr::rewrite_assign_rhs::h9f5a847f57227608
+                               at /home/anoromi/code/rust/rustfmt/src/expr.rs:2190:5
+  44:     0x56379bed9278 - rustfmt_nightly::items::<impl rustfmt_nightly::rewrite::Rewrite for rustc_ast::ast::Local>::rewrite_result::h3f7ed596981b7271
+                               at /home/anoromi/code/rust/rustfmt/src/items.rs:129:22
+  45:     0x56379bed7a86 - rustfmt_nightly::items::<impl rustfmt_nightly::rewrite::Rewrite for rustc_ast::ast::Local>::rewrite::h8c3caff2cdae25e4
+                               at /home/anoromi/code/rust/rustfmt/src/items.rs:53:9
+  46:     0x56379c09e774 - <rustc_ast::ptr::P<T> as rustfmt_nightly::rewrite::Rewrite>::rewrite::h3c1af530a5afc79e
+                               at /home/anoromi/code/rust/rustfmt/src/rewrite.rs:29:9
+  47:     0x56379c09e68d - rustfmt_nightly::rewrite::Rewrite::rewrite_result::hde660d27a1058b75
+                               at /home/anoromi/code/rust/rustfmt/src/rewrite.rs:23:9
+  48:     0x56379c20c3fc - rustfmt_nightly::stmt::format_stmt::h02d8df77884d6f13
+                               at /home/anoromi/code/rust/rustfmt/src/stmt.rs:127:42
+  49:     0x56379c20beae - <rustfmt_nightly::stmt::Stmt as rustfmt_nightly::rewrite::Rewrite>::rewrite_result::h864dbbbbfb49723b
+                               at /home/anoromi/code/rust/rustfmt/src/stmt.rs:107:9
+  50:     0x56379c20bd99 - <rustfmt_nightly::stmt::Stmt as rustfmt_nightly::rewrite::Rewrite>::rewrite::h645516d461b71e23
+                               at /home/anoromi/code/rust/rustfmt/src/stmt.rs:93:9
+  51:     0x56379c18807c - rustfmt_nightly::items::<impl rustfmt_nightly::visitor::FmtVisitor>::single_line_fn::hde66ec625daf10e0
+                               at /home/anoromi/code/rust/rustfmt/src/items.rs:503:19
+  52:     0x56379c1908ea - rustfmt_nightly::visitor::FmtVisitor::visit_fn::h7de9674c163509df
+                               at /home/anoromi/code/rust/rustfmt/src/visitor.rs:417:31
+  53:     0x56379c192647 - rustfmt_nightly::visitor::FmtVisitor::visit_item::ha37ca7ef3f40add9
+                               at /home/anoromi/code/rust/rustfmt/src/visitor.rs:567:25
+  54:     0x56379c18ca3a - rustfmt_nightly::reorder::<impl rustfmt_nightly::visitor::FmtVisitor>::visit_items_with_reordering::h5164dda4adcca1fe
+                               at /home/anoromi/code/rust/rustfmt/src/reorder.rs:349:17
+  55:     0x56379c19561e - rustfmt_nightly::visitor::FmtVisitor::walk_mod_items::ha7544c24863676bd
+                               at /home/anoromi/code/rust/rustfmt/src/visitor.rs:887:9
+  56:     0x56379c196295 - rustfmt_nightly::visitor::FmtVisitor::format_separate_mod::h401fba909cff161f
+                               at /home/anoromi/code/rust/rustfmt/src/visitor.rs:996:9
+  57:     0x56379bdb418f - rustfmt_nightly::formatting::FormatContext<T>::format_file::he8921a4ff155a9cb
+                               at /home/anoromi/code/rust/rustfmt/src/formatting.rs:222:9
+  58:     0x56379bdb3561 - rustfmt_nightly::formatting::format_project::he73e55ce1c8cb205
+                               at /home/anoromi/code/rust/rustfmt/src/formatting.rs:159:9
+  59:     0x56379bdb46c8 - rustfmt_nightly::formatting::<impl rustfmt_nightly::Session<T>>::format_input_inner::{{closure}}::h5bd0df1410451572
+                               at /home/anoromi/code/rust/rustfmt/src/formatting.rs:49:33
+  60:     0x56379bd9b07b - scoped_tls::ScopedKey<T>::with::hfbf13e1ad728ec66
+                               at /rust/deps/scoped-tls-1.0.1/src/lib.rs:171:13
+  61:     0x56379bdaf64c - rustc_span::create_session_if_not_set_then::{{closure}}::h7067be8d4d27b590
+                               at /home/anoromi/.rustup/toolchains/nightly-2025-04-02-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/compiler/rustc_span/src/lib.rs:160:50
+  62:     0x56379bd9af81 - scoped_tls::ScopedKey<T>::set::h31c1f5d5eb1a45cb
+                               at /rust/deps/scoped-tls-1.0.1/src/lib.rs:137:9
+  63:     0x56379bdaf582 - rustc_span::create_session_if_not_set_then::h32d367b414b92eb6
+                               at /home/anoromi/.rustup/toolchains/nightly-2025-04-02-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/compiler/rustc_span/src/lib.rs:160:9
+  64:     0x56379bdb4ab6 - rustfmt_nightly::formatting::<impl rustfmt_nightly::Session<T>>::format_input_inner::h8f5196d47e8599ff
+                               at /home/anoromi/code/rust/rustfmt/src/formatting.rs:39:9
+  65:     0x56379bdb4e7e - rustfmt_nightly::Session<T>::format::h92bf0aedf014eb89
+                               at /home/anoromi/code/rust/rustfmt/src/lib.rs:467:9
+  66:     0x56379bdaae22 - orustfmt::format_and_emit_report::h48d2d8c82b4d6c84
+                               at /home/anoromi/code/rust/rustfmt/src/bin/main.rs:399:11
+  67:     0x56379bda3ec4 - orustfmt::format::hc507e620ed7517cf
+                               at /home/anoromi/code/rust/rustfmt/src/bin/main.rs:374:17
+  68:     0x56379bda2de9 - orustfmt::execute::h114e1a8a2a3e6277
+                               at /home/anoromi/code/rust/rustfmt/src/bin/main.rs:274:14
+  69:     0x56379bda1360 - orustfmt::main::h0615df91bb390faa
+                               at /home/anoromi/code/rust/rustfmt/src/bin/main.rs:38:27
+  70:     0x56379bd98874 - core::ops::function::FnOnce::call_once::had9db9f9dddc06f4
+                               at /home/anoromi/.rustup/toolchains/nightly-2025-04-02-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/function.rs:250:5
+  71:     0x56379bdaf4c0 - std::sys::backtrace::__rust_begin_short_backtrace::hd953a5e845585a8a
+                               at /home/anoromi/.rustup/toolchains/nightly-2025-04-02-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/sys/backtrace.rs:152:18
+  72:     0x56379bdb86b5 - std::rt::lang_start::{{closure}}::h59f8196e390dc307
+                               at /home/anoromi/.rustup/toolchains/nightly-2025-04-02-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/rt.rs:199:10
+  73:     0x7f50ae73984f - std::rt::lang_start_internal::hf1c5ec0b1cc19157
+  74:     0x56379bdb8698 - std::rt::lang_start::hc1b2cc2f396aa702
+                               at /home/anoromi/.rustup/toolchains/nightly-2025-04-02-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/rt.rs:198:5
+  75:     0x56379bda10fe - main
+  76:     0x7f50a84181ca - <unknown>
+  77:     0x7f50a841828b - __libc_start_main
+  78:     0x56379bd980a5 - _start
+  79:                0x0 - <unknown>
+
+
+rustc version: 1.88.0-nightly (e2014e876 2025-04-01)
+platform: x86_64-unknown-linux-gnu

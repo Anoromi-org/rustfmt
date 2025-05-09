@@ -161,8 +161,8 @@ fn rewrite_pairs_multiline<T: Rewrite>(
             }
         }
 
-        println!("hmmm");
-        println!("{}", default_rw.as_ref().unwrap());
+        //println!("hmmm");
+        //println!("{}", default_rw.as_ref().unwrap());
         result.push_str(default_rw.as_ref().map_err(|err| err.clone())?);
     }
     Ok(result)
@@ -332,8 +332,8 @@ impl FlattenPair for ast::Expr {
                 SeparatorPlace::Front => nested_shape.offset_left(nested_overhead, node.span)?,
             };
             let test = node.rewrite_result(context, default_shape).unwrap();
-            println!("test");
-            println!("{}", test);
+            // eprintln!("test");
+            // eprintln!("{}", test);
             Ok(test)
         };
 

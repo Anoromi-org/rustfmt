@@ -378,8 +378,6 @@ fn rewrite_struct_pat(
     let path_shape = shape.sub_width(2, span)?;
     let path_str = rewrite_path(context, PathContext::Expr, qself, path, path_shape)?;
 
-    println!("Hello there");
-
     if fields.is_empty() && !ellipsis {
         return Ok(format!("{path_str} {{}}"));
     }
@@ -449,7 +447,6 @@ fn rewrite_struct_pat(
     let fields_str = wrap_struct_field(context, &[], &fields_str, shape, v_shape, one_line_width)?;
 
     let indent = shape.to_string_with_newline(context.config);
-    println!("indent:{indent}end");
 
     Ok(format!("{path_str}{indent}{{{fields_str}}}"))
 }

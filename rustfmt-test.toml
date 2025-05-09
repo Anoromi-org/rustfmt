@@ -15,6 +15,7 @@ brace_style = "AlwaysNextLine"
 control_brace_style = "AlwaysNextLine"
 empty_item_single_line = true
 fn_params_layout = "Tall"
+trailing_comma = "Vertical"
 fn_single_line = true
 match_arm_leading_pipes = "Preserve"
 imports_granularity = "Preserve"

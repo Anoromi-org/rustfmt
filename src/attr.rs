@@ -162,6 +162,8 @@ fn format_derive(
     result.push_str(prefix);
     // OTODO rewrite
     result.push_str("[ derive(");
+
+    dbg!(context.config.trailing_comma());
     if nested {
         let nested_indent = argument_shape.indent.to_string_with_newline(context.config);
         result.push_str(&nested_indent);
@@ -170,6 +172,9 @@ fn format_derive(
     } else if let SeparatorTactic::Always = context.config.trailing_comma() {
         // Retain the trailing comma.
         result.push_str(&item_str);
+    }else if item_str.ends_with(", ") {
+        result.push_str(&item_str[..item_str.len() - 2]);
+        result.push(' ');
     } else if item_str.ends_with(',') {
         // Remove the trailing comma.
         result.push_str(&item_str[..item_str.len() - 1]);

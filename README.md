@@ -1,6 +1,6 @@
 # rustfmt [![linux](https://github.com/rust-lang/rustfmt/actions/workflows/linux.yml/badge.svg?event=push)](https://github.com/rust-lang/rustfmt/actions/workflows/linux.yml) [![mac](https://github.com/rust-lang/rustfmt/actions/workflows/mac.yml/badge.svg?event=push)](https://github.com/rust-lang/rustfmt/actions/workflows/mac.yml) [![windows](https://github.com/rust-lang/rustfmt/actions/workflows/windows.yml/badge.svg?event=push)](https://github.com/rust-lang/rustfmt/actions/workflows/windows.yml) [![crates.io](https://img.shields.io/crates/v/rustfmt-nightly.svg)](https://crates.io/crates/rustfmt-nightly)
 
-## For ORustfmt documentation go to [OREADME.md](./OReadme.md)
+## For ORustfmt documentation go to [OREADME.md](./OREADME.md)
 
 A tool for formatting Rust code according to style guidelines.
 

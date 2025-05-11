@@ -1,5 +1,7 @@
 # rustfmt [![linux](https://github.com/rust-lang/rustfmt/actions/workflows/linux.yml/badge.svg?event=push)](https://github.com/rust-lang/rustfmt/actions/workflows/linux.yml) [![mac](https://github.com/rust-lang/rustfmt/actions/workflows/mac.yml/badge.svg?event=push)](https://github.com/rust-lang/rustfmt/actions/workflows/mac.yml) [![windows](https://github.com/rust-lang/rustfmt/actions/workflows/windows.yml/badge.svg?event=push)](https://github.com/rust-lang/rustfmt/actions/workflows/windows.yml) [![crates.io](https://img.shields.io/crates/v/rustfmt-nightly.svg)](https://crates.io/crates/rustfmt-nightly)
 
+## For ORustfmt documentation go to [OREADME.md](./OReadme.md)
+
 A tool for formatting Rust code according to style guidelines.
 
 If you'd like to help out (and you should, it's a fun project!), see
@@ -85,7 +87,7 @@ The easiest way to run rustfmt against a project is with `cargo fmt`. `cargo fmt
 single-crate projects and [cargo workspaces](https://doc.rust-lang.org/book/ch14-03-cargo-workspaces.html).
 Please see `cargo fmt --help` for usage information.
 
-You can specify the path to your own `rustfmt` binary for cargo to use by setting the`RUSTFMT` 
+You can specify the path to your own `rustfmt` binary for cargo to use by setting the`RUSTFMT`
 environment variable. This was added in v1.4.22, so you must have this version or newer to leverage this feature (`cargo fmt --version`)
 
 ### Running `rustfmt` directly

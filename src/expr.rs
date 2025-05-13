@@ -2277,6 +2277,7 @@ fn choose_rhs<R: Rewrite>(
     rhs_tactics: RhsTactics,
     has_rhs_comment: bool,
 ) -> RewriteResult {
+
     match orig_rhs {
         Ok(ref new_str) if new_str.is_empty() => Ok(String::new()),
         Ok(ref new_str) if !new_str.contains('\n') && unicode_str_width(new_str) <= shape.width => {
@@ -2293,9 +2294,11 @@ fn choose_rhs<R: Rewrite>(
             let new_rhs = expr.rewrite_result(context, new_shape);
             let new_indent_str = &shape
                 .indent
-                .block_indent(context.config)
+                // OTODO works
+                //.block_indent(context.config)
                 .to_string_with_newline(context.config);
             let before_space_str = if has_rhs_comment { "" } else { " " };
+
 
             match (orig_rhs, new_rhs) {
                 (Ok(ref orig_rhs), Ok(ref new_rhs))
@@ -2334,7 +2337,8 @@ fn shape_from_rhs_tactic(
             .with_max_width(context.config)
             .sub_width_opt(shape.indent.width()),
         RhsTactics::Default | RhsTactics::AllowOverflow => {
-            Shape::indented(shape.indent.block_indent(context.config), context.config)
+            // OTODO works, hm, hm, hm, very sus
+            Shape::indented(shape.indent/*.block_indent(context.config) */, context.config)
                 .sub_width_opt(shape.rhs_overhead(context.config))
         }
     }

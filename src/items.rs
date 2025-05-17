@@ -1781,7 +1781,8 @@ fn rewrite_ty<R: Rewrite>(
             let shape = shape.offset_left(result.len() + 2, span)?;
             let type_bounds = bounds
                 .rewrite_result(context, shape)
-                .map(|s| format!(": {}", s))?;
+                // OTODO type Visitor : Vistoor
+                .map(|s| format!(" : {}", s))?;
             result.push_str(&type_bounds);
         }
     }

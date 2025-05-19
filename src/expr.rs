@@ -1886,7 +1886,8 @@ pub(crate) fn wrap_struct_field(
             ))
         } else {
             // One liner or visual indent.
-            Ok(format!(" {fields_str} "))
+            // OTODO Self {  test  }
+            Ok(format!("{fields_str}"))
         }
     } else {
         Ok(format!(

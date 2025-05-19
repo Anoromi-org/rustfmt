@@ -423,9 +423,16 @@ fn rewrite_struct_pat(
     let has_trailing_comma = fmt.needs_trailing_separator();
 
     if ellipsis {
+        // OTODO { hewo, .. }
+        if fields_str.ends_with(" ") {
+            fields_str.pop();
+        }
         if fields_str.contains('\n') || fields_str.len() > one_line_width {
             // Add a missing trailing comma.
             if !has_trailing_comma {
+                if fields_str.ends_with(' ') {
+                    fields_str.pop();
+                }
                 fields_str.push(',');
             }
             fields_str.push('\n');
@@ -440,13 +447,26 @@ fn rewrite_struct_pat(
                 }
             }
         }
+
+        if fields_str.is_empty() {
+            fields_str.push(' ');
+        }
         fields_str.push_str("..");
+        if !fields_str.contains("\n") {
+            fields_str.push(' ');
+        }
     }
 
     // ast::Pat doesn't have attrs so use &[]
     let fields_str = wrap_struct_field(context, &[], &fields_str, shape, v_shape, one_line_width)?;
 
-    let indent = shape.to_string_with_newline(context.config);
+    dbg!(&fields_str);
+    // OTODO match v { Hm::Hm\n{ .. } => ...}
+    let indent = if fields_str.contains("\n") {
+        shape.indent.to_string_with_newline(context.config)
+    } else {
+        " ".into()
+    };
 
     Ok(format!("{path_str}{indent}{{{fields_str}}}"))
 }

@@ -426,6 +426,7 @@ fn rewrite_match_body(
         Ok(format!("{} =>{}{}{}", pats_str, block_sep, body_str, comma))
     };
 
+
     let next_line_indent = if !is_block || is_empty_block {
         shape.indent.block_indent(context.config)
     } else {

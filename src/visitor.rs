@@ -492,7 +492,6 @@ impl<'b, 'a: 'b> FmtVisitor<'a> {
         };
 
         // TODO(calebcartwright): consider enabling box_patterns feature gate
-        dbg!(item);
         if should_visit_node_again {
             match item.kind {
                 ast::ItemKind::Use(ref tree) => self.format_import(item, tree),

@@ -1846,6 +1846,7 @@ fn rewrite_struct_lit<'a>(
         write_list(&item_vec, &fmt)?
     };
 
+    dbg!(&fields_str);
     let fields_str =
         wrap_struct_field(context, attrs, &fields_str, shape, v_shape, one_line_width)?;
 
@@ -1881,7 +1882,8 @@ pub(crate) fn wrap_struct_field(
             Ok(format!(
                 "{}{}{}",
                 nested_shape.indent.to_string_with_newline(context.config),
-                fields_str,
+                // OTODO test_file16.rs
+                fields_str.trim_end(),
                 shape.indent.to_string_with_newline(context.config)
             ))
         } else {
@@ -1895,7 +1897,8 @@ pub(crate) fn wrap_struct_field(
             nested_shape.indent.to_string_with_newline(context.config),
             inner_attrs.rewrite_result(context, shape)?,
             nested_shape.indent.to_string_with_newline(context.config),
-            fields_str,
+            // OTODO test_file16.rs
+            fields_str.trim_end(),
             shape.indent.to_string_with_newline(context.config)
         ))
     }
@@ -2278,7 +2281,6 @@ fn choose_rhs<R: Rewrite>(
     rhs_tactics: RhsTactics,
     has_rhs_comment: bool,
 ) -> RewriteResult {
-
     match orig_rhs {
         Ok(ref new_str) if new_str.is_empty() => Ok(String::new()),
         Ok(ref new_str) if !new_str.contains('\n') && unicode_str_width(new_str) <= shape.width => {
@@ -2299,7 +2301,6 @@ fn choose_rhs<R: Rewrite>(
                 //.block_indent(context.config)
                 .to_string_with_newline(context.config);
             let before_space_str = if has_rhs_comment { "" } else { " " };
-
 
             match (orig_rhs, new_rhs) {
                 (Ok(ref orig_rhs), Ok(ref new_rhs))
@@ -2339,8 +2340,11 @@ fn shape_from_rhs_tactic(
             .sub_width_opt(shape.indent.width()),
         RhsTactics::Default | RhsTactics::AllowOverflow => {
             // OTODO works, hm, hm, hm, very sus
-            Shape::indented(shape.indent/*.block_indent(context.config) */, context.config)
-                .sub_width_opt(shape.rhs_overhead(context.config))
+            Shape::indented(
+                shape.indent, /*.block_indent(context.config) */
+                context.config,
+            )
+            .sub_width_opt(shape.rhs_overhead(context.config))
         }
     }
 }

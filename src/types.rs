@@ -977,7 +977,7 @@ impl Rewrite for ast::Ty {
                     .checked_sub(4)
                     .max_width_error(shape.width, self.span())?;
                 ty.rewrite_result(context, Shape::legacy(budget, shape.indent + 1))
-                    .map(|ty_str| format!("[{}]", ty_str))
+                    .map(|ty_str| format!("[ {} ]", ty_str))
             }
             ast::TyKind::Tup(ref items) => {
                 rewrite_tuple(context, items.iter(), self.span, shape, items.len() == 1)

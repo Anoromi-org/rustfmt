@@ -1029,7 +1029,7 @@ fn format_impl_ref_and_type(
     // Couldn't fit the self type on a single line, put it on a new line.
     result.push('\n');
     // Add indentation of one additional tab.
-    let new_line_offset = offset.block_indent(context.config);
+    let new_line_offset = offset;
     result.push_str(&new_line_offset.to_string(context.config));
     if trait_ref.is_some() {
         result.push_str("for ");

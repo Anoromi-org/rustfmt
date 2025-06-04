@@ -723,7 +723,8 @@ impl<'a> Context<'a> {
         } else {
             if !items_str.is_empty() {
                 result.push_str(&nested_indent_str);
-                result.push_str(items_str);
+                // OTODO
+                result.push_str(items_str.trim_end());
             }
             result.push_str(&indent_str);
         }

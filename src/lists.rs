@@ -318,7 +318,8 @@ where
         // dbg!(&tactic);
 
         match tactic {
-            DefinitiveListTactic::Horizontal /* if !first  */ => {
+            // OTODO
+            DefinitiveListTactic::Horizontal /* if  !first */  => {
                 result.push(' ');
             }
             DefinitiveListTactic::SpecialMacro(num_args_before) => {
@@ -334,7 +335,7 @@ where
                 }
             }
             DefinitiveListTactic::Vertical
-                if /* !first && */ !inner_item.is_empty() && !result.is_empty()  =>
+                if  !first &&  !inner_item.is_empty() && !result.is_empty()  =>
             {
                 result.push('\n');
                 result.push_str(indent_str);

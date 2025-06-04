@@ -15,7 +15,7 @@ use crate::formatting::generated::is_generated_file;
 use crate::modules::Module;
 use crate::parse::parser::{DirectoryOwnership, Parser, ParserError};
 use crate::parse::session::ParseSess;
-use crate::utils::{contains_skip, count_newlines};
+use crate::utils::{contains_skip, count_newlines, remove_trailing_white_spaces};
 use crate::visitor::FmtVisitor;
 use crate::{ErrorKind, FormatReport, Input, Session, modules, source_file};
 
@@ -281,6 +281,7 @@ impl<'b, T: Write + 'b> FormatHandler for Session<'b, T> {
         result: String,
         report: &mut FormatReport,
     ) -> Result<(), ErrorKind> {
+        let result = crate::utils::remove_trailing_white_spaces(&result);
         if let Some(ref mut out) = self.out {
             match source_file::write_file(
                 Some(psess),

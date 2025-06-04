@@ -11,4 +11,5 @@ fn help_me_god()
   };
 
   let hm = Self { .. };
+  let hm = Self { heh };
 }

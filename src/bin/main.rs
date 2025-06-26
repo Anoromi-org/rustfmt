@@ -321,7 +321,7 @@ fn format_string(input: String, options: GetOptsOptions) -> Result<i32> {
     format_and_emit_report(&mut session, Input::Text(input));
 
     let exit_code = if session.has_operational_errors() || session.has_parsing_errors() {
-        1
+        0
     } else {
         0
     };

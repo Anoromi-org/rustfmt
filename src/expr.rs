@@ -127,6 +127,7 @@ pub(crate) fn format_expr(
         }
         ast::ExprKind::Paren(ref subexpr) => rewrite_paren(context, subexpr, shape, expr.span),
         ast::ExprKind::Binary(op, ref lhs, ref rhs) => {
+
             // FIXME: format comments between operands and operator
             rewrite_all_pairs(expr, shape, context).or_else(|_| {
                 rewrite_pair(

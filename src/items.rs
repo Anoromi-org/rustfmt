@@ -2632,17 +2632,22 @@ fn rewrite_fn_base(
             if context.config.style_edition() <= StyleEdition::Edition2021
                 || context.config.indent_style() == IndentStyle::Visual
             {
-                let indent = if param_str.is_empty() {
-                    // Aligning with nonexistent params looks silly.
-                    force_new_line_for_brace = true;
-                    indent + 4
-                } else {
-                    // FIXME: we might want to check that using the param indent
-                    // doesn't blow our budget, and if it does, then fallback to
-                    // the where-clause indent.
-                    param_indent
-                };
+                // OTODO
+                // let indent = if param_str.is_empty() {
+                //     // Aligning with nonexistent params looks silly.
+                //     dbg!("hewo 1");
+                //     force_new_line_for_brace = true;
+                //     indent + 4
+                // } else {
+                //     // FIXME: we might want to check that using the param indent
+                //     // doesn't blow our budget, and if it does, then fallback to
+                //     // the where-clause indent.
+                //     dbg!("hewo 2");
+                //     param_indent
+                // };
 
+
+                dbg!("hm 1");
                 result.push_str(&indent.to_string_with_newline(context.config));
                 Shape::indented(indent, context.config)
             } else {
@@ -2658,6 +2663,7 @@ fn rewrite_fn_base(
                     };
                 }
 
+                dbg!("hm 2");
                 result.push_str(&ret_shape.indent.to_string_with_newline(context.config));
                 ret_shape
             }
@@ -2671,6 +2677,7 @@ fn rewrite_fn_base(
             }
 
             let ret_shape = Shape::indented(indent, context.config);
+            dbg!("hm 3");
             ret_shape
                 .offset_left_opt(last_line_width(&result))
                 .unwrap_or(ret_shape)

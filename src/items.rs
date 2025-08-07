@@ -126,13 +126,26 @@ impl Rewrite for ast::Local {
             // 1 = trailing semicolon;
             let nested_shape = shape.sub_width(1, self.span())?;
 
-            result = rewrite_assign_rhs(
-                context,
-                result,
-                init,
-                &RhsAssignKind::Expr(&init.kind, init.span),
-                nested_shape,
-            )?;
+            result = if matches!(init.kind, ast::ExprKind::Block(..)) {
+                // For `let` statements with a block initializer, place the opening brace
+                // on the next line.
+                rewrite_assign_rhs_with(
+                    context,
+                    result,
+                    init,
+                    nested_shape,
+                    &RhsAssignKind::Expr(&init.kind, init.span),
+                    RhsTactics::ForceNextLineWithoutIndent,
+                )?
+            } else {
+                rewrite_assign_rhs(
+                    context,
+                    result,
+                    init,
+                    &RhsAssignKind::Expr(&init.kind, init.span),
+                    nested_shape,
+                )?
+            };
 
             if let Some(block) = else_block {
                 let else_kw_span = init.span.between(block.span);

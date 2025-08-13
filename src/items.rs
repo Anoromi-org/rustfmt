@@ -2621,88 +2621,96 @@ fn rewrite_fn_base(
 
     // Return type.
     if let ast::FnRetTy::Ty(..) = fd.output {
-        let ret_should_indent = match context.config.indent_style() {
-            // If our params are block layout then we surely must have space.
-            IndentStyle::Block if put_params_in_block || fd.inputs.is_empty() => false,
-            _ if params_last_line_contains_comment => false,
-            _ if result.contains('\n') || multi_line_ret_str => true,
-            _ => {
-                // If the return type would push over the max width, then put the return type on
-                // a new line. With the +1 for the signature length an additional space between
-                // the closing parenthesis of the param and the arrow '->' is considered.
-                let mut sig_length = result.len() + indent.width() + ret_str_len + 1;
+        // Determine if the function signature is multiline. If so, enforce the
+        // arrow and return type to be on their own, separate lines.
+        let is_signature_multiline = result.contains('\n')
+            || put_params_in_block
+            || param_str.contains('\n');
 
-                // If there is no where-clause, take into account the space after the return type
-                // and the brace.
-                if where_clause.predicates.is_empty() {
-                    sig_length += 2;
-                }
-
-                sig_length > context.config.max_width()
-            }
-        };
-        let ret_shape = if ret_should_indent {
-            if context.config.style_edition() <= StyleEdition::Edition2021
-                || context.config.indent_style() == IndentStyle::Visual
-            {
-                // OTODO
-                // let indent = if param_str.is_empty() {
-                //     // Aligning with nonexistent params looks silly.
-                //     dbg!("hewo 1");
-                //     force_new_line_for_brace = true;
-                //     indent + 4
-                // } else {
-                //     // FIXME: we might want to check that using the param indent
-                //     // doesn't blow our budget, and if it does, then fallback to
-                //     // the where-clause indent.
-                //     dbg!("hewo 2");
-                //     param_indent
-                // };
-
-
-                dbg!("hm 1");
-                result.push_str(&indent.to_string_with_newline(context.config));
-                Shape::indented(indent, context.config)
-            } else {
-                let mut ret_shape = Shape::indented(indent, context.config);
-                if param_str.is_empty() {
-                    // Aligning with nonexistent params looks silly.
-                    force_new_line_for_brace = true;
-                    ret_shape = if context.use_block_indent() {
-                        ret_shape.offset_left_opt(4).unwrap_or(ret_shape)
-                    } else {
-                        ret_shape.indent = ret_shape.indent + 4;
-                        ret_shape
-                    };
-                }
-
-                dbg!("hm 2");
-                result.push_str(&ret_shape.indent.to_string_with_newline(context.config));
-                ret_shape
+        if is_signature_multiline {
+            // Arrow on its own line
+            result.push_str(&indent.to_string_with_newline(context.config));
+            result.push_str("->");
+            // Return type on the following new line (without arrow)
+            result.push_str(&indent.to_string_with_newline(context.config));
+            let ret_shape = Shape::indented(indent, context.config);
+            if let ast::FnRetTy::Ty(ref ty) = fd.output {
+                let ty_str = ty.rewrite_result(context, ret_shape)?;
+                result.push_str(&ty_str);
             }
         } else {
-            if context.config.style_edition() >= StyleEdition::Edition2024 {
-                if !param_str.is_empty() || !no_params_and_over_max_width {
+            let ret_should_indent = match context.config.indent_style() {
+                // If our params are block layout then we surely must have space.
+                IndentStyle::Block if put_params_in_block || fd.inputs.is_empty() => false,
+                _ if params_last_line_contains_comment => false,
+                _ if result.contains('\n') || multi_line_ret_str => true,
+                _ => {
+                    // If the return type would push over the max width, then put the return type on
+                    // a new line. With the +1 for the signature length an additional space between
+                    // the closing parenthesis of the param and the arrow '->' is considered.
+                    let mut sig_length = result.len() + indent.width() + ret_str_len + 1;
+
+                    // If there is no where-clause, take into account the space after the return type
+                    // and the brace.
+                    if where_clause.predicates.is_empty() {
+                        sig_length += 2;
+                    }
+
+                    sig_length > context.config.max_width()
+                }
+            };
+            let ret_shape = if ret_should_indent {
+                if context.config.style_edition() <= StyleEdition::Edition2021
+                    || context.config.indent_style() == IndentStyle::Visual
+                {
+                    result.push_str(&indent.to_string_with_newline(context.config));
+                    Shape::indented(indent, context.config)
+                } else {
+                    let mut ret_shape = Shape::indented(indent, context.config);
+                    if param_str.is_empty() {
+                        // Aligning with nonexistent params looks silly.
+                        force_new_line_for_brace = true;
+                        ret_shape = if context.use_block_indent() {
+                            ret_shape.offset_left_opt(4).unwrap_or(ret_shape)
+                        } else {
+                            ret_shape.indent = ret_shape.indent + 4;
+                            ret_shape
+                        };
+                    }
+
+                    result.push_str(&ret_shape.indent.to_string_with_newline(context.config));
+                    ret_shape
+                }
+            } else {
+                if context.config.style_edition() >= StyleEdition::Edition2024 {
+                    if !param_str.is_empty() || !no_params_and_over_max_width {
+                        result.push(' ');
+                    }
+                } else {
                     result.push(' ');
                 }
+
+                let ret_shape = Shape::indented(indent, context.config);
+                ret_shape
+                    .offset_left_opt(last_line_width(&result))
+                    .unwrap_or(ret_shape)
+            };
+
+            if ret_should_indent {
+                // Place arrow on its own line and the return type on the following line
+                result.push_str("->");
+                result.push_str(&ret_shape.indent.to_string_with_newline(context.config));
+                if let ast::FnRetTy::Ty(ref ty) = fd.output {
+                    let ty_str = ty.rewrite_result(context, ret_shape)?;
+                    result.push_str(&ty_str);
+                }
+            } else if multi_line_ret_str {
+                // Re-layout the return type using computed shape
+                let ret_str = fd.output.rewrite_result(context, ret_shape)?;
+                result.push_str(&ret_str);
             } else {
-                result.push(' ');
+                result.push_str(&ret_str);
             }
-
-            let ret_shape = Shape::indented(indent, context.config);
-            dbg!("hm 3");
-            ret_shape
-                .offset_left_opt(last_line_width(&result))
-                .unwrap_or(ret_shape)
-        };
-
-        if multi_line_ret_str || ret_should_indent {
-            // Now that we know the proper indent and width, we need to
-            // re-layout the return type.
-            let ret_str = fd.output.rewrite_result(context, ret_shape)?;
-            result.push_str(&ret_str);
-        } else {
-            result.push_str(&ret_str);
         }
 
         // Comment between return type and the end of the decl.

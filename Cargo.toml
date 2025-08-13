@@ -1,6 +1,4 @@
 # This line needs to come before anything else in Cargo.toml
-cargo-features = ["codegen-backend"]
-
 [package]
 
 name = "rustfmt-nightly"
@@ -68,5 +66,3 @@ semver = "1.0.21"
 # This package uses #[feature(rustc_private)]
 rustc_private = true
 
-[profile.dev]
-codegen-backend = "cranelift"

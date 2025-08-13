@@ -366,7 +366,7 @@ impl ChainItem {
                 .map(|ty| ty.rewrite_result(context, shape))
                 .collect::<Result<Vec<_>, RewriteError>>()?;
 
-            format!("::<{}>", type_list.join(", "))
+            format!("::< {} >", type_list.join(", "))
         };
         let callee_str = format!(".{}{}", rewrite_ident(context, method_name), type_str);
         rewrite_call(context, &callee_str, &args, span, shape)
